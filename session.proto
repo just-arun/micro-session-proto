@@ -1,0 +1,19 @@
+syntax="proto3";
+
+option go_package=".";
+
+package user_session_service;
+
+service SessionService {
+    rpc SetUserSession(UserSessionPayload) returns(SetUserSessionResponse);
+}
+
+message UserSessionPayload {
+    string userID = 1;
+    string role = 2;
+}
+
+message SetUserSessionResponse {
+    string token = 1;
+}
+
