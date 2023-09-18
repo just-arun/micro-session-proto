@@ -25,7 +25,7 @@ type UserSessionPayload struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserID string `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`
+	UserID uint64 `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty"`
 	Role   string `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
 }
 
@@ -61,11 +61,11 @@ func (*UserSessionPayload) Descriptor() ([]byte, []int) {
 	return file_session_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *UserSessionPayload) GetUserID() string {
+func (x *UserSessionPayload) GetUserID() uint64 {
 	if x != nil {
 		return x.UserID
 	}
-	return ""
+	return 0
 }
 
 func (x *UserSessionPayload) GetRole() string {
@@ -80,7 +80,8 @@ type SetUserSessionResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Token   string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Refresh string `protobuf:"bytes,2,opt,name=refresh,proto3" json:"refresh,omitempty"`
 }
 
 func (x *SetUserSessionResponse) Reset() {
@@ -122,6 +123,421 @@ func (x *SetUserSessionResponse) GetToken() string {
 	return ""
 }
 
+func (x *SetUserSessionResponse) GetRefresh() string {
+	if x != nil {
+		return x.Refresh
+	}
+	return ""
+}
+
+type SetRoleParam struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data []*RoleObject `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *SetRoleParam) Reset() {
+	*x = SetRoleParam{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetRoleParam) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetRoleParam) ProtoMessage() {}
+
+func (x *SetRoleParam) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetRoleParam.ProtoReflect.Descriptor instead.
+func (*SetRoleParam) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SetRoleParam) GetData() []*RoleObject {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type SetRoleResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ok bool `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
+}
+
+func (x *SetRoleResponse) Reset() {
+	*x = SetRoleResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetRoleResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetRoleResponse) ProtoMessage() {}
+
+func (x *SetRoleResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetRoleResponse.ProtoReflect.Descriptor instead.
+func (*SetRoleResponse) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SetRoleResponse) GetOk() bool {
+	if x != nil {
+		return x.Ok
+	}
+	return false
+}
+
+type AccessObject struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id  uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Key string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (x *AccessObject) Reset() {
+	*x = AccessObject{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessObject) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessObject) ProtoMessage() {}
+
+func (x *AccessObject) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessObject.ProtoReflect.Descriptor instead.
+func (*AccessObject) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AccessObject) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *AccessObject) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+type RoleObject struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id     uint64          `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name   string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Access []*AccessObject `protobuf:"bytes,3,rep,name=access,proto3" json:"access,omitempty"`
+}
+
+func (x *RoleObject) Reset() {
+	*x = RoleObject{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RoleObject) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoleObject) ProtoMessage() {}
+
+func (x *RoleObject) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoleObject.ProtoReflect.Descriptor instead.
+func (*RoleObject) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *RoleObject) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *RoleObject) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *RoleObject) GetAccess() []*AccessObject {
+	if x != nil {
+		return x.Access
+	}
+	return nil
+}
+
+type GetRoleParam struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *GetRoleParam) Reset() {
+	*x = GetRoleParam{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRoleParam) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRoleParam) ProtoMessage() {}
+
+func (x *GetRoleParam) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRoleParam.ProtoReflect.Descriptor instead.
+func (*GetRoleParam) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetRoleParam) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type GetRoleReponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Access []*AccessObject `protobuf:"bytes,1,rep,name=access,proto3" json:"access,omitempty"`
+}
+
+func (x *GetRoleReponse) Reset() {
+	*x = GetRoleReponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRoleReponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRoleReponse) ProtoMessage() {}
+
+func (x *GetRoleReponse) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRoleReponse.ProtoReflect.Descriptor instead.
+func (*GetRoleReponse) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetRoleReponse) GetAccess() []*AccessObject {
+	if x != nil {
+		return x.Access
+	}
+	return nil
+}
+
+type HaveAccessParam struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key  string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Role string `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
+}
+
+func (x *HaveAccessParam) Reset() {
+	*x = HaveAccessParam{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HaveAccessParam) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HaveAccessParam) ProtoMessage() {}
+
+func (x *HaveAccessParam) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HaveAccessParam.ProtoReflect.Descriptor instead.
+func (*HaveAccessParam) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *HaveAccessParam) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *HaveAccessParam) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+type HaveAccessResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Access bool `protobuf:"varint,1,opt,name=access,proto3" json:"access,omitempty"`
+}
+
+func (x *HaveAccessResponse) Reset() {
+	*x = HaveAccessResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_session_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HaveAccessResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HaveAccessResponse) ProtoMessage() {}
+
+func (x *HaveAccessResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_session_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HaveAccessResponse.ProtoReflect.Descriptor instead.
+func (*HaveAccessResponse) Descriptor() ([]byte, []int) {
+	return file_session_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *HaveAccessResponse) GetAccess() bool {
+	if x != nil {
+		return x.Access
+	}
+	return false
+}
+
 var File_session_proto protoreflect.FileDescriptor
 
 var file_session_proto_rawDesc = []byte{
@@ -129,20 +545,69 @@ var file_session_proto_rawDesc = []byte{
 	0x14, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x65,
 	0x72, 0x76, 0x69, 0x63, 0x65, 0x22, 0x40, 0x0a, 0x12, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x73,
 	0x73, 0x69, 0x6f, 0x6e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x75,
-	0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65,
+	0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x75, 0x73, 0x65,
 	0x72, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x22, 0x2e, 0x0a, 0x16, 0x53, 0x65, 0x74, 0x55, 0x73,
+	0x09, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x22, 0x48, 0x0a, 0x16, 0x53, 0x65, 0x74, 0x55, 0x73,
 	0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x32, 0x7a, 0x0a, 0x0e, 0x53, 0x65, 0x73, 0x73, 0x69,
-	0x6f, 0x6e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x68, 0x0a, 0x0e, 0x53, 0x65, 0x74,
-	0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x75, 0x73,
+	0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x72, 0x65, 0x66, 0x72, 0x65,
+	0x73, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x72, 0x65, 0x66, 0x72, 0x65, 0x73,
+	0x68, 0x22, 0x44, 0x0a, 0x0c, 0x53, 0x65, 0x74, 0x52, 0x6f, 0x6c, 0x65, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x12, 0x34, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x20, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x6f, 0x6c, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63,
+	0x74, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x21, 0x0a, 0x0f, 0x53, 0x65, 0x74, 0x52, 0x6f,
+	0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f, 0x6b, 0x22, 0x30, 0x0a, 0x0c, 0x41, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
+	0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x22, 0x6c, 0x0a, 0x0a,
+	0x52, 0x6f, 0x6c, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x3a,
+	0x0a, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22,
+	0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x4f, 0x62, 0x6a, 0x65,
+	0x63, 0x74, 0x52, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x22, 0x0a, 0x0c, 0x47, 0x65,
+	0x74, 0x52, 0x6f, 0x6c, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x4c,
+	0x0a, 0x0e, 0x47, 0x65, 0x74, 0x52, 0x6f, 0x6c, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x3a, 0x0a, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x22, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x4f, 0x62,
+	0x6a, 0x65, 0x63, 0x74, 0x52, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x37, 0x0a, 0x0f,
+	0x48, 0x61, 0x76, 0x65, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x72, 0x6f, 0x6c, 0x65, 0x22, 0x2c, 0x0a, 0x12, 0x48, 0x61, 0x76, 0x65, 0x41, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x61, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x32, 0x84, 0x03, 0x0a, 0x0e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x53,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x68, 0x0a, 0x0e, 0x53, 0x65, 0x74, 0x55, 0x73, 0x65,
+	0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f,
+	0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x50, 0x61, 0x79, 0x6c, 0x6f,
+	0x61, 0x64, 0x1a, 0x2c, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f,
+	0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x53, 0x65, 0x74, 0x55, 0x73, 0x65,
+	0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x54, 0x0a, 0x07, 0x53, 0x65, 0x74, 0x52, 0x6f, 0x6c, 0x65, 0x12, 0x22, 0x2e, 0x75, 0x73,
 	0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x50, 0x61,
-	0x79, 0x6c, 0x6f, 0x61, 0x64, 0x1a, 0x2c, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73,
-	0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x53, 0x65, 0x74,
-	0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x42, 0x03, 0x5a, 0x01, 0x2e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x63, 0x65, 0x2e, 0x53, 0x65, 0x74, 0x52, 0x6f, 0x6c, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x1a,
+	0x25, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x53, 0x65, 0x74, 0x52, 0x6f, 0x6c, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x53, 0x0a, 0x07, 0x47, 0x65, 0x74, 0x52, 0x6f, 0x6c,
+	0x65, 0x12, 0x22, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e,
+	0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x6f, 0x6c, 0x65,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x1a, 0x24, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73,
+	0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x47, 0x65, 0x74,
+	0x52, 0x6f, 0x6c, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5d, 0x0a, 0x0a, 0x48,
+	0x61, 0x76, 0x65, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x25, 0x2e, 0x75, 0x73, 0x65, 0x72,
+	0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x48, 0x61, 0x76, 0x65, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x1a, 0x28, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x48, 0x61, 0x76, 0x65, 0x41, 0x63, 0x63, 0x65,
+	0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x03, 0x5a, 0x01, 0x2e, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -157,19 +622,36 @@ func file_session_proto_rawDescGZIP() []byte {
 	return file_session_proto_rawDescData
 }
 
-var file_session_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_session_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_session_proto_goTypes = []interface{}{
 	(*UserSessionPayload)(nil),     // 0: user_session_service.UserSessionPayload
 	(*SetUserSessionResponse)(nil), // 1: user_session_service.SetUserSessionResponse
+	(*SetRoleParam)(nil),           // 2: user_session_service.SetRoleParam
+	(*SetRoleResponse)(nil),        // 3: user_session_service.SetRoleResponse
+	(*AccessObject)(nil),           // 4: user_session_service.AccessObject
+	(*RoleObject)(nil),             // 5: user_session_service.RoleObject
+	(*GetRoleParam)(nil),           // 6: user_session_service.GetRoleParam
+	(*GetRoleReponse)(nil),         // 7: user_session_service.GetRoleReponse
+	(*HaveAccessParam)(nil),        // 8: user_session_service.HaveAccessParam
+	(*HaveAccessResponse)(nil),     // 9: user_session_service.HaveAccessResponse
 }
 var file_session_proto_depIdxs = []int32{
-	0, // 0: user_session_service.SessionService.SetUserSession:input_type -> user_session_service.UserSessionPayload
-	1, // 1: user_session_service.SessionService.SetUserSession:output_type -> user_session_service.SetUserSessionResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: user_session_service.SetRoleParam.data:type_name -> user_session_service.RoleObject
+	4, // 1: user_session_service.RoleObject.access:type_name -> user_session_service.AccessObject
+	4, // 2: user_session_service.GetRoleReponse.access:type_name -> user_session_service.AccessObject
+	0, // 3: user_session_service.SessionService.SetUserSession:input_type -> user_session_service.UserSessionPayload
+	2, // 4: user_session_service.SessionService.SetRole:input_type -> user_session_service.SetRoleParam
+	6, // 5: user_session_service.SessionService.GetRole:input_type -> user_session_service.GetRoleParam
+	8, // 6: user_session_service.SessionService.HaveAccess:input_type -> user_session_service.HaveAccessParam
+	1, // 7: user_session_service.SessionService.SetUserSession:output_type -> user_session_service.SetUserSessionResponse
+	3, // 8: user_session_service.SessionService.SetRole:output_type -> user_session_service.SetRoleResponse
+	7, // 9: user_session_service.SessionService.GetRole:output_type -> user_session_service.GetRoleReponse
+	9, // 10: user_session_service.SessionService.HaveAccess:output_type -> user_session_service.HaveAccessResponse
+	7, // [7:11] is the sub-list for method output_type
+	3, // [3:7] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_session_proto_init() }
@@ -202,6 +684,102 @@ func file_session_proto_init() {
 				return nil
 			}
 		}
+		file_session_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetRoleParam); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_session_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetRoleResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_session_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessObject); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_session_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RoleObject); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_session_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRoleParam); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_session_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRoleReponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_session_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HaveAccessParam); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_session_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HaveAccessResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -209,7 +787,7 @@ func file_session_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_session_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

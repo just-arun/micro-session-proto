@@ -22,7 +22,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SessionServiceClient interface {
+	// for user session
 	SetUserSession(ctx context.Context, in *UserSessionPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error)
+	// for roles
+	SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*SetRoleResponse, error)
+	GetRole(ctx context.Context, in *GetRoleParam, opts ...grpc.CallOption) (*GetRoleReponse, error)
+	// for access check
+	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
 }
 
 type sessionServiceClient struct {
@@ -42,11 +48,44 @@ func (c *sessionServiceClient) SetUserSession(ctx context.Context, in *UserSessi
 	return out, nil
 }
 
+func (c *sessionServiceClient) SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*SetRoleResponse, error) {
+	out := new(SetRoleResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) GetRole(ctx context.Context, in *GetRoleParam, opts ...grpc.CallOption) (*GetRoleReponse, error) {
+	out := new(GetRoleReponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error) {
+	out := new(HaveAccessResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/HaveAccess", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionServiceServer is the server API for SessionService service.
 // All implementations must embed UnimplementedSessionServiceServer
 // for forward compatibility
 type SessionServiceServer interface {
+	// for user session
 	SetUserSession(context.Context, *UserSessionPayload) (*SetUserSessionResponse, error)
+	// for roles
+	SetRole(context.Context, *SetRoleParam) (*SetRoleResponse, error)
+	GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error)
+	// for access check
+	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -56,6 +95,15 @@ type UnimplementedSessionServiceServer struct {
 
 func (UnimplementedSessionServiceServer) SetUserSession(context.Context, *UserSessionPayload) (*SetUserSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetUserSession not implemented")
+}
+func (UnimplementedSessionServiceServer) SetRole(context.Context, *SetRoleParam) (*SetRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetRole not implemented")
+}
+func (UnimplementedSessionServiceServer) GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRole not implemented")
+}
+func (UnimplementedSessionServiceServer) HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HaveAccess not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 
@@ -88,6 +136,60 @@ func _SessionService_SetUserSession_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionService_SetRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetRoleParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).SetRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/SetRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).SetRole(ctx, req.(*SetRoleParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_GetRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRoleParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).GetRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/GetRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).GetRole(ctx, req.(*GetRoleParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_HaveAccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HaveAccessParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).HaveAccess(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/HaveAccess",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).HaveAccess(ctx, req.(*HaveAccessParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionService_ServiceDesc is the grpc.ServiceDesc for SessionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +200,18 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetUserSession",
 			Handler:    _SessionService_SetUserSession_Handler,
+		},
+		{
+			MethodName: "SetRole",
+			Handler:    _SessionService_SetRole_Handler,
+		},
+		{
+			MethodName: "GetRole",
+			Handler:    _SessionService_GetRole_Handler,
+		},
+		{
+			MethodName: "HaveAccess",
+			Handler:    _SessionService_HaveAccess_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

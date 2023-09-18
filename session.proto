@@ -5,15 +5,61 @@ option go_package=".";
 package user_session_service;
 
 service SessionService {
+    // for user session
     rpc SetUserSession(UserSessionPayload) returns(SetUserSessionResponse);
+    
+    // for roles
+    rpc SetRole(SetRoleParam) returns(SetRoleResponse);
+    rpc GetRole(GetRoleParam) returns(GetRoleReponse);
+   
+    // for access check
+    rpc HaveAccess(HaveAccessParam) returns(HaveAccessResponse);
 }
 
 message UserSessionPayload {
-    string userID = 1;
+    uint64 userID = 1;
     string role = 2;
 }
 
 message SetUserSessionResponse {
     string token = 1;
+    string refresh = 2;
 }
+
+message SetRoleParam {
+    repeated RoleObject data = 1;
+}
+
+message SetRoleResponse {
+    bool ok = 1;
+}
+
+message AccessObject {
+    uint64 id = 1;
+    string key = 2;
+}
+
+message RoleObject {
+    uint64 id = 1;
+    string name = 2;
+    repeated AccessObject access = 3;
+}
+
+message GetRoleParam {
+    string name = 1;
+
+}
+message GetRoleReponse {
+    repeated AccessObject access = 1;
+}
+
+message HaveAccessParam {
+    string key = 1;
+    string role = 2;
+}
+message HaveAccessResponse {
+    bool access = 1;
+}
+
+
 
