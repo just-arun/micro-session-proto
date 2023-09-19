@@ -1,5 +1,7 @@
 syntax="proto3";
 
+import "timestamp.proto";
+
 option go_package=".";
 
 package user_session_service;
@@ -7,9 +9,13 @@ package user_session_service;
 service SessionService {
     // for user session
     rpc SetUserSession(UserSessionPayload) returns(SetUserSessionResponse);
+    rpc DeleteUserSession(DeleteUserSessionPayload) returns(OkResponse);
+    rpc ClearUserAllSession(DeleteUserSessionPayload) returns(OkResponse);
+    rpc GetUserAllSession(GetUserAllSessionPayload) returns(GetUserAllSessionResponse);
+    rpc GetUserSessionRefreshToken(GetUserSessionRefreshTokenPayload) returns(SetUserSessionResponse);
     
     // for roles
-    rpc SetRole(SetRoleParam) returns(SetRoleResponse);
+    rpc SetRole(SetRoleParam) returns(OkResponse);
     rpc GetRole(GetRoleParam) returns(GetRoleReponse);
    
     // for access check
@@ -26,12 +32,34 @@ message SetUserSessionResponse {
     string refresh = 2;
 }
 
-message SetRoleParam {
-    repeated RoleObject data = 1;
+message DeleteUserSessionPayload {
+    string token = 1;
 }
 
-message SetRoleResponse {
-    bool ok = 1;
+message ClearUserAllSessionPayload {
+    uint64 userID = 1;
+}
+
+message GetUserAllSessionPayload {
+    uint64 userID = 1;
+}
+
+message UserSessionData {
+    uint64 userID = 1;
+    string role = 2;
+    google.protobuf.Timestamp time = 3;
+}
+
+message GetUserAllSessionResponse {
+    repeated UserSessionData session = 1;
+}
+
+message GetUserSessionRefreshTokenPayload {
+    string refreshToken = 1;
+}
+
+message SetRoleParam {
+    repeated RoleObject data = 1;
 }
 
 message AccessObject {
@@ -61,5 +89,7 @@ message HaveAccessResponse {
     bool access = 1;
 }
 
-
+message OkResponse {
+    bool ok = 1;
+}
 

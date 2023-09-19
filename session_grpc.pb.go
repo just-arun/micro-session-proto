@@ -24,8 +24,12 @@ const _ = grpc.SupportPackageIsVersion7
 type SessionServiceClient interface {
 	// for user session
 	SetUserSession(ctx context.Context, in *UserSessionPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error)
+	DeleteUserSession(ctx context.Context, in *DeleteUserSessionPayload, opts ...grpc.CallOption) (*OkResponse, error)
+	ClearUserAllSession(ctx context.Context, in *DeleteUserSessionPayload, opts ...grpc.CallOption) (*OkResponse, error)
+	GetUserAllSession(ctx context.Context, in *GetUserAllSessionPayload, opts ...grpc.CallOption) (*GetUserAllSessionResponse, error)
+	GetUserSessionRefreshToken(ctx context.Context, in *GetUserSessionRefreshTokenPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error)
 	// for roles
-	SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*SetRoleResponse, error)
+	SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*OkResponse, error)
 	GetRole(ctx context.Context, in *GetRoleParam, opts ...grpc.CallOption) (*GetRoleReponse, error)
 	// for access check
 	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
@@ -48,8 +52,44 @@ func (c *sessionServiceClient) SetUserSession(ctx context.Context, in *UserSessi
 	return out, nil
 }
 
-func (c *sessionServiceClient) SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*SetRoleResponse, error) {
-	out := new(SetRoleResponse)
+func (c *sessionServiceClient) DeleteUserSession(ctx context.Context, in *DeleteUserSessionPayload, opts ...grpc.CallOption) (*OkResponse, error) {
+	out := new(OkResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/DeleteUserSession", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) ClearUserAllSession(ctx context.Context, in *DeleteUserSessionPayload, opts ...grpc.CallOption) (*OkResponse, error) {
+	out := new(OkResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/ClearUserAllSession", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) GetUserAllSession(ctx context.Context, in *GetUserAllSessionPayload, opts ...grpc.CallOption) (*GetUserAllSessionResponse, error) {
+	out := new(GetUserAllSessionResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetUserAllSession", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) GetUserSessionRefreshToken(ctx context.Context, in *GetUserSessionRefreshTokenPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error) {
+	out := new(SetUserSessionResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetUserSessionRefreshToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*OkResponse, error) {
+	out := new(OkResponse)
 	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetRole", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -81,8 +121,12 @@ func (c *sessionServiceClient) HaveAccess(ctx context.Context, in *HaveAccessPar
 type SessionServiceServer interface {
 	// for user session
 	SetUserSession(context.Context, *UserSessionPayload) (*SetUserSessionResponse, error)
+	DeleteUserSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error)
+	ClearUserAllSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error)
+	GetUserAllSession(context.Context, *GetUserAllSessionPayload) (*GetUserAllSessionResponse, error)
+	GetUserSessionRefreshToken(context.Context, *GetUserSessionRefreshTokenPayload) (*SetUserSessionResponse, error)
 	// for roles
-	SetRole(context.Context, *SetRoleParam) (*SetRoleResponse, error)
+	SetRole(context.Context, *SetRoleParam) (*OkResponse, error)
 	GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error)
 	// for access check
 	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
@@ -96,7 +140,19 @@ type UnimplementedSessionServiceServer struct {
 func (UnimplementedSessionServiceServer) SetUserSession(context.Context, *UserSessionPayload) (*SetUserSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetUserSession not implemented")
 }
-func (UnimplementedSessionServiceServer) SetRole(context.Context, *SetRoleParam) (*SetRoleResponse, error) {
+func (UnimplementedSessionServiceServer) DeleteUserSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserSession not implemented")
+}
+func (UnimplementedSessionServiceServer) ClearUserAllSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClearUserAllSession not implemented")
+}
+func (UnimplementedSessionServiceServer) GetUserAllSession(context.Context, *GetUserAllSessionPayload) (*GetUserAllSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserAllSession not implemented")
+}
+func (UnimplementedSessionServiceServer) GetUserSessionRefreshToken(context.Context, *GetUserSessionRefreshTokenPayload) (*SetUserSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserSessionRefreshToken not implemented")
+}
+func (UnimplementedSessionServiceServer) SetRole(context.Context, *SetRoleParam) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetRole not implemented")
 }
 func (UnimplementedSessionServiceServer) GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error) {
@@ -132,6 +188,78 @@ func _SessionService_SetUserSession_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SessionServiceServer).SetUserSession(ctx, req.(*UserSessionPayload))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_DeleteUserSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserSessionPayload)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).DeleteUserSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/DeleteUserSession",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).DeleteUserSession(ctx, req.(*DeleteUserSessionPayload))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_ClearUserAllSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserSessionPayload)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).ClearUserAllSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/ClearUserAllSession",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).ClearUserAllSession(ctx, req.(*DeleteUserSessionPayload))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_GetUserAllSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserAllSessionPayload)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).GetUserAllSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/GetUserAllSession",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).GetUserAllSession(ctx, req.(*GetUserAllSessionPayload))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_GetUserSessionRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserSessionRefreshTokenPayload)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).GetUserSessionRefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/GetUserSessionRefreshToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).GetUserSessionRefreshToken(ctx, req.(*GetUserSessionRefreshTokenPayload))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -200,6 +328,22 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetUserSession",
 			Handler:    _SessionService_SetUserSession_Handler,
+		},
+		{
+			MethodName: "DeleteUserSession",
+			Handler:    _SessionService_DeleteUserSession_Handler,
+		},
+		{
+			MethodName: "ClearUserAllSession",
+			Handler:    _SessionService_ClearUserAllSession_Handler,
+		},
+		{
+			MethodName: "GetUserAllSession",
+			Handler:    _SessionService_GetUserAllSession_Handler,
+		},
+		{
+			MethodName: "GetUserSessionRefreshToken",
+			Handler:    _SessionService_GetUserSessionRefreshToken_Handler,
 		},
 		{
 			MethodName: "SetRole",
