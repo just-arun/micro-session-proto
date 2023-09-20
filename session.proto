@@ -13,6 +13,7 @@ service SessionService {
     rpc ClearUserAllSession(DeleteUserSessionPayload) returns(OkResponse);
     rpc GetUserAllSession(GetUserAllSessionPayload) returns(GetUserAllSessionResponse);
     rpc GetUserSessionRefreshToken(GetUserSessionRefreshTokenPayload) returns(SetUserSessionResponse);
+    rpc VerifyUserSession(VerifyUserSessionParams) returns(VerifyUserSessionResponse);
     
     // for roles
     rpc SetRole(SetRoleParam) returns(OkResponse);
@@ -22,9 +23,19 @@ service SessionService {
     rpc HaveAccess(HaveAccessParam) returns(HaveAccessResponse);
 }
 
+message VerifyUserSessionParams {
+    string token = 1;
+}
+
+message VerifyUserSessionResponse {
+    bool ok = 1;
+    string userID = 2;
+    repeated string role = 3;
+}
+
 message UserSessionPayload {
     uint64 userID = 1;
-    string role = 2;
+    repeated string role = 2;
 }
 
 message SetUserSessionResponse {
@@ -46,7 +57,7 @@ message GetUserAllSessionPayload {
 
 message UserSessionData {
     uint64 userID = 1;
-    string role = 2;
+    repeated string role = 2;
     google.protobuf.Timestamp time = 3;
 }
 
@@ -83,7 +94,7 @@ message GetRoleReponse {
 
 message HaveAccessParam {
     string key = 1;
-    string role = 2;
+    repeated string role = 2;
 }
 message HaveAccessResponse {
     bool access = 1;
