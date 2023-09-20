@@ -30,12 +30,12 @@ message VerifyUserSessionParams {
 message VerifyUserSessionResponse {
     bool ok = 1;
     string userID = 2;
-    repeated string role = 3;
+    repeated string roles = 3;
 }
 
 message UserSessionPayload {
     uint64 userID = 1;
-    repeated string role = 2;
+    repeated string roles = 2;
 }
 
 message SetUserSessionResponse {
@@ -57,7 +57,7 @@ message GetUserAllSessionPayload {
 
 message UserSessionData {
     uint64 userID = 1;
-    repeated string role = 2;
+    repeated string roles = 2;
     google.protobuf.Timestamp time = 3;
 }
 
@@ -94,7 +94,7 @@ message GetRoleReponse {
 
 message HaveAccessParam {
     string key = 1;
-    repeated string role = 2;
+    repeated string roles = 2;
 }
 message HaveAccessResponse {
     bool access = 1;
