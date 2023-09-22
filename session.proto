@@ -24,7 +24,7 @@ service SessionService {
 
     // One Time Password and Temporary link
     rpc SetOTP(OTPPayload) returns(OkResponse);
-    rpc GetOtp(OTPPayload) returns(OkResponse);
+    rpc GetOTP(OTPPayload) returns(OkResponse);
 }
 
 message OTPPayload {

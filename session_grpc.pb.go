@@ -36,7 +36,7 @@ type SessionServiceClient interface {
 	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
 	// One Time Password and Temporary link
 	SetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
-	GetOtp(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
+	GetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
 }
 
 type sessionServiceClient struct {
@@ -137,9 +137,9 @@ func (c *sessionServiceClient) SetOTP(ctx context.Context, in *OTPPayload, opts 
 	return out, nil
 }
 
-func (c *sessionServiceClient) GetOtp(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error) {
+func (c *sessionServiceClient) GetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error) {
 	out := new(OkResponse)
-	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetOtp", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetOTP", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +164,7 @@ type SessionServiceServer interface {
 	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
 	// One Time Password and Temporary link
 	SetOTP(context.Context, *OTPPayload) (*OkResponse, error)
-	GetOtp(context.Context, *OTPPayload) (*OkResponse, error)
+	GetOTP(context.Context, *OTPPayload) (*OkResponse, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -202,8 +202,8 @@ func (UnimplementedSessionServiceServer) HaveAccess(context.Context, *HaveAccess
 func (UnimplementedSessionServiceServer) SetOTP(context.Context, *OTPPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetOTP not implemented")
 }
-func (UnimplementedSessionServiceServer) GetOtp(context.Context, *OTPPayload) (*OkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOtp not implemented")
+func (UnimplementedSessionServiceServer) GetOTP(context.Context, *OTPPayload) (*OkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOTP not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 
@@ -398,20 +398,20 @@ func _SessionService_SetOTP_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SessionService_GetOtp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _SessionService_GetOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(OTPPayload)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SessionServiceServer).GetOtp(ctx, in)
+		return srv.(SessionServiceServer).GetOTP(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user_session_service.SessionService/GetOtp",
+		FullMethod: "/user_session_service.SessionService/GetOTP",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).GetOtp(ctx, req.(*OTPPayload))
+		return srv.(SessionServiceServer).GetOTP(ctx, req.(*OTPPayload))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -464,8 +464,8 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SessionService_SetOTP_Handler,
 		},
 		{
-			MethodName: "GetOtp",
-			Handler:    _SessionService_GetOtp_Handler,
+			MethodName: "GetOTP",
+			Handler:    _SessionService_GetOTP_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
