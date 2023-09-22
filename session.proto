@@ -104,7 +104,7 @@ message GetRoleReponse {
 }
 
 message HaveAccessParam {
-    string token = 1;
+    string accessSlug = 1;
     repeated string roles = 2;
 }
 message HaveAccessResponse {
@@ -113,6 +113,5 @@ message HaveAccessResponse {
 
 message OkResponse {
     bool ok = 1;
-
 }
 
