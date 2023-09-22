@@ -84,8 +84,9 @@ message GetUserSessionRefreshTokenPayload {
 }
 
 message SetRoleParam {
-    string name = 1;
-    repeated RoleObject data = 2;
+    uint64 id = 1;
+    string name = 2;
+    repeated RoleObject data = 3;
 }
 
 message AccessObject {
