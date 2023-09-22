@@ -34,6 +34,9 @@ type SessionServiceClient interface {
 	GetRole(ctx context.Context, in *GetRoleParam, opts ...grpc.CallOption) (*GetRoleReponse, error)
 	// for access check
 	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
+	// One Time Password and Temporary link
+	SetOTP(ctx context.Context, in *SetOTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
+	GetOtp(ctx context.Context, in *GetOTPParam, opts ...grpc.CallOption) (*SetOTPPayload, error)
 }
 
 type sessionServiceClient struct {
@@ -125,6 +128,24 @@ func (c *sessionServiceClient) HaveAccess(ctx context.Context, in *HaveAccessPar
 	return out, nil
 }
 
+func (c *sessionServiceClient) SetOTP(ctx context.Context, in *SetOTPPayload, opts ...grpc.CallOption) (*OkResponse, error) {
+	out := new(OkResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetOTP", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sessionServiceClient) GetOtp(ctx context.Context, in *GetOTPParam, opts ...grpc.CallOption) (*SetOTPPayload, error) {
+	out := new(SetOTPPayload)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetOtp", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionServiceServer is the server API for SessionService service.
 // All implementations must embed UnimplementedSessionServiceServer
 // for forward compatibility
@@ -141,6 +162,9 @@ type SessionServiceServer interface {
 	GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error)
 	// for access check
 	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
+	// One Time Password and Temporary link
+	SetOTP(context.Context, *SetOTPPayload) (*OkResponse, error)
+	GetOtp(context.Context, *GetOTPParam) (*SetOTPPayload, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -174,6 +198,12 @@ func (UnimplementedSessionServiceServer) GetRole(context.Context, *GetRoleParam)
 }
 func (UnimplementedSessionServiceServer) HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HaveAccess not implemented")
+}
+func (UnimplementedSessionServiceServer) SetOTP(context.Context, *SetOTPPayload) (*OkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetOTP not implemented")
+}
+func (UnimplementedSessionServiceServer) GetOtp(context.Context, *GetOTPParam) (*SetOTPPayload, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOtp not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 
@@ -350,6 +380,42 @@ func _SessionService_HaveAccess_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionService_SetOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetOTPPayload)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).SetOTP(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/SetOTP",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).SetOTP(ctx, req.(*SetOTPPayload))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SessionService_GetOtp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOTPParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).GetOtp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/GetOtp",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).GetOtp(ctx, req.(*GetOTPParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionService_ServiceDesc is the grpc.ServiceDesc for SessionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -392,6 +458,14 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HaveAccess",
 			Handler:    _SessionService_HaveAccess_Handler,
+		},
+		{
+			MethodName: "SetOTP",
+			Handler:    _SessionService_SetOTP_Handler,
+		},
+		{
+			MethodName: "GetOtp",
+			Handler:    _SessionService_GetOtp_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
