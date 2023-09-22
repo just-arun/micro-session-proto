@@ -25,7 +25,7 @@ type SessionServiceClient interface {
 	// for user session
 	SetUserSession(ctx context.Context, in *UserSessionPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error)
 	DeleteUserSession(ctx context.Context, in *DeleteUserSessionPayload, opts ...grpc.CallOption) (*OkResponse, error)
-	ClearUserAllSession(ctx context.Context, in *DeleteUserSessionPayload, opts ...grpc.CallOption) (*OkResponse, error)
+	ClearUserAllSession(ctx context.Context, in *ClearUserAllSessionPayload, opts ...grpc.CallOption) (*OkResponse, error)
 	GetUserAllSession(ctx context.Context, in *GetUserAllSessionPayload, opts ...grpc.CallOption) (*GetUserAllSessionResponse, error)
 	GetUserSessionRefreshToken(ctx context.Context, in *GetUserSessionRefreshTokenPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error)
 	VerifyUserSession(ctx context.Context, in *VerifyUserSessionParams, opts ...grpc.CallOption) (*VerifyUserSessionResponse, error)
@@ -66,7 +66,7 @@ func (c *sessionServiceClient) DeleteUserSession(ctx context.Context, in *Delete
 	return out, nil
 }
 
-func (c *sessionServiceClient) ClearUserAllSession(ctx context.Context, in *DeleteUserSessionPayload, opts ...grpc.CallOption) (*OkResponse, error) {
+func (c *sessionServiceClient) ClearUserAllSession(ctx context.Context, in *ClearUserAllSessionPayload, opts ...grpc.CallOption) (*OkResponse, error) {
 	out := new(OkResponse)
 	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/ClearUserAllSession", in, out, opts...)
 	if err != nil {
@@ -163,7 +163,7 @@ type SessionServiceServer interface {
 	// for user session
 	SetUserSession(context.Context, *UserSessionPayload) (*SetUserSessionResponse, error)
 	DeleteUserSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error)
-	ClearUserAllSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error)
+	ClearUserAllSession(context.Context, *ClearUserAllSessionPayload) (*OkResponse, error)
 	GetUserAllSession(context.Context, *GetUserAllSessionPayload) (*GetUserAllSessionResponse, error)
 	GetUserSessionRefreshToken(context.Context, *GetUserSessionRefreshTokenPayload) (*SetUserSessionResponse, error)
 	VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error)
@@ -189,7 +189,7 @@ func (UnimplementedSessionServiceServer) SetUserSession(context.Context, *UserSe
 func (UnimplementedSessionServiceServer) DeleteUserSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserSession not implemented")
 }
-func (UnimplementedSessionServiceServer) ClearUserAllSession(context.Context, *DeleteUserSessionPayload) (*OkResponse, error) {
+func (UnimplementedSessionServiceServer) ClearUserAllSession(context.Context, *ClearUserAllSessionPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClearUserAllSession not implemented")
 }
 func (UnimplementedSessionServiceServer) GetUserAllSession(context.Context, *GetUserAllSessionPayload) (*GetUserAllSessionResponse, error) {
@@ -269,7 +269,7 @@ func _SessionService_DeleteUserSession_Handler(srv interface{}, ctx context.Cont
 }
 
 func _SessionService_ClearUserAllSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteUserSessionPayload)
+	in := new(ClearUserAllSessionPayload)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -281,7 +281,7 @@ func _SessionService_ClearUserAllSession_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/user_session_service.SessionService/ClearUserAllSession",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).ClearUserAllSession(ctx, req.(*DeleteUserSessionPayload))
+		return srv.(SessionServiceServer).ClearUserAllSession(ctx, req.(*ClearUserAllSessionPayload))
 	}
 	return interceptor(ctx, in, info, handler)
 }

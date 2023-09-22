@@ -10,7 +10,7 @@ service SessionService {
     // for user session
     rpc SetUserSession(UserSessionPayload) returns(SetUserSessionResponse);
     rpc DeleteUserSession(DeleteUserSessionPayload) returns(OkResponse);
-    rpc ClearUserAllSession(DeleteUserSessionPayload) returns(OkResponse);
+    rpc ClearUserAllSession(ClearUserAllSessionPayload) returns(OkResponse);
     rpc GetUserAllSession(GetUserAllSessionPayload) returns(GetUserAllSessionResponse);
     rpc GetUserSessionRefreshToken(GetUserSessionRefreshTokenPayload) returns(SetUserSessionResponse);
     rpc VerifyUserSession(VerifyUserSessionParams) returns(VerifyUserSessionResponse);
