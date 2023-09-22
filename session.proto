@@ -80,6 +80,7 @@ message GetUserAllSessionResponse {
 
 message GetUserSessionRefreshTokenPayload {
     string refreshToken = 1;
+    uint64 accessTokenExpireInMinutes = 3;
 }
 
 message SetRoleParam {
