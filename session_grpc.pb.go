@@ -37,6 +37,7 @@ type SessionServiceClient interface {
 	// One Time Password and Temporary link
 	SetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
 	GetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
+	Hello(ctx context.Context, in *OkResponse, opts ...grpc.CallOption) (*OkResponse, error)
 }
 
 type sessionServiceClient struct {
@@ -146,6 +147,15 @@ func (c *sessionServiceClient) GetOTP(ctx context.Context, in *OTPPayload, opts 
 	return out, nil
 }
 
+func (c *sessionServiceClient) Hello(ctx context.Context, in *OkResponse, opts ...grpc.CallOption) (*OkResponse, error) {
+	out := new(OkResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/Hello", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionServiceServer is the server API for SessionService service.
 // All implementations must embed UnimplementedSessionServiceServer
 // for forward compatibility
@@ -165,6 +175,7 @@ type SessionServiceServer interface {
 	// One Time Password and Temporary link
 	SetOTP(context.Context, *OTPPayload) (*OkResponse, error)
 	GetOTP(context.Context, *OTPPayload) (*OkResponse, error)
+	Hello(context.Context, *OkResponse) (*OkResponse, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -204,6 +215,9 @@ func (UnimplementedSessionServiceServer) SetOTP(context.Context, *OTPPayload) (*
 }
 func (UnimplementedSessionServiceServer) GetOTP(context.Context, *OTPPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOTP not implemented")
+}
+func (UnimplementedSessionServiceServer) Hello(context.Context, *OkResponse) (*OkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 
@@ -416,6 +430,24 @@ func _SessionService_GetOTP_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionService_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OkResponse)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).Hello(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/Hello",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).Hello(ctx, req.(*OkResponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionService_ServiceDesc is the grpc.ServiceDesc for SessionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -466,6 +498,10 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOTP",
 			Handler:    _SessionService_GetOTP_Handler,
+		},
+		{
+			MethodName: "Hello",
+			Handler:    _SessionService_Hello_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
