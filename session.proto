@@ -47,6 +47,8 @@ message VerifyUserSessionResponse {
 message UserSessionPayload {
     uint64 userID = 1;
     repeated string roles = 2;
+    uint64 accessTokenExpireInMinutes = 3;
+    uint64 refreshTokenExpireInMinutes = 4;
 }
 
 message SetUserSessionResponse {
