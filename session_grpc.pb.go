@@ -30,7 +30,7 @@ type SessionServiceClient interface {
 	GetUserSessionRefreshToken(ctx context.Context, in *GetUserSessionRefreshTokenPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error)
 	VerifyUserSession(ctx context.Context, in *VerifyUserSessionParams, opts ...grpc.CallOption) (*VerifyUserSessionResponse, error)
 	// for roles
-	SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*OkResponse, error)
+	SetRole(ctx context.Context, in *RoleObject, opts ...grpc.CallOption) (*OkResponse, error)
 	GetRole(ctx context.Context, in *GetRoleParam, opts ...grpc.CallOption) (*GetRoleReponse, error)
 	// for access check
 	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
@@ -102,7 +102,7 @@ func (c *sessionServiceClient) VerifyUserSession(ctx context.Context, in *Verify
 	return out, nil
 }
 
-func (c *sessionServiceClient) SetRole(ctx context.Context, in *SetRoleParam, opts ...grpc.CallOption) (*OkResponse, error) {
+func (c *sessionServiceClient) SetRole(ctx context.Context, in *RoleObject, opts ...grpc.CallOption) (*OkResponse, error) {
 	out := new(OkResponse)
 	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetRole", in, out, opts...)
 	if err != nil {
@@ -168,7 +168,7 @@ type SessionServiceServer interface {
 	GetUserSessionRefreshToken(context.Context, *GetUserSessionRefreshTokenPayload) (*SetUserSessionResponse, error)
 	VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error)
 	// for roles
-	SetRole(context.Context, *SetRoleParam) (*OkResponse, error)
+	SetRole(context.Context, *RoleObject) (*OkResponse, error)
 	GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error)
 	// for access check
 	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
@@ -201,7 +201,7 @@ func (UnimplementedSessionServiceServer) GetUserSessionRefreshToken(context.Cont
 func (UnimplementedSessionServiceServer) VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyUserSession not implemented")
 }
-func (UnimplementedSessionServiceServer) SetRole(context.Context, *SetRoleParam) (*OkResponse, error) {
+func (UnimplementedSessionServiceServer) SetRole(context.Context, *RoleObject) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetRole not implemented")
 }
 func (UnimplementedSessionServiceServer) GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error) {
@@ -341,7 +341,7 @@ func _SessionService_VerifyUserSession_Handler(srv interface{}, ctx context.Cont
 }
 
 func _SessionService_SetRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetRoleParam)
+	in := new(RoleObject)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -353,7 +353,7 @@ func _SessionService_SetRole_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/user_session_service.SessionService/SetRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).SetRole(ctx, req.(*SetRoleParam))
+		return srv.(SessionServiceServer).SetRole(ctx, req.(*RoleObject))
 	}
 	return interceptor(ctx, in, info, handler)
 }

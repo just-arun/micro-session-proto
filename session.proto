@@ -16,7 +16,7 @@ service SessionService {
     rpc VerifyUserSession(VerifyUserSessionParams) returns(VerifyUserSessionResponse);
     
     // for roles
-    rpc SetRole(SetRoleParam) returns(OkResponse);
+    rpc SetRole(RoleObject) returns(OkResponse);
     rpc GetRole(GetRoleParam) returns(GetRoleReponse);
    
     // for access check
