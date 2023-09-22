@@ -40,7 +40,7 @@ message VerifyUserSessionParams {
 
 message VerifyUserSessionResponse {
     bool ok = 1;
-    string userID = 2;
+    uint64 userID = 2;
     repeated string roles = 3;
 }
 
