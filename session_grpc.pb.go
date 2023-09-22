@@ -35,8 +35,8 @@ type SessionServiceClient interface {
 	// for access check
 	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
 	// One Time Password and Temporary link
-	SetOTP(ctx context.Context, in *SetOTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
-	GetOtp(ctx context.Context, in *GetOTPParam, opts ...grpc.CallOption) (*SetOTPPayload, error)
+	SetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
+	GetOtp(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
 }
 
 type sessionServiceClient struct {
@@ -128,7 +128,7 @@ func (c *sessionServiceClient) HaveAccess(ctx context.Context, in *HaveAccessPar
 	return out, nil
 }
 
-func (c *sessionServiceClient) SetOTP(ctx context.Context, in *SetOTPPayload, opts ...grpc.CallOption) (*OkResponse, error) {
+func (c *sessionServiceClient) SetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error) {
 	out := new(OkResponse)
 	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetOTP", in, out, opts...)
 	if err != nil {
@@ -137,8 +137,8 @@ func (c *sessionServiceClient) SetOTP(ctx context.Context, in *SetOTPPayload, op
 	return out, nil
 }
 
-func (c *sessionServiceClient) GetOtp(ctx context.Context, in *GetOTPParam, opts ...grpc.CallOption) (*SetOTPPayload, error) {
-	out := new(SetOTPPayload)
+func (c *sessionServiceClient) GetOtp(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error) {
+	out := new(OkResponse)
 	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetOtp", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -163,8 +163,8 @@ type SessionServiceServer interface {
 	// for access check
 	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
 	// One Time Password and Temporary link
-	SetOTP(context.Context, *SetOTPPayload) (*OkResponse, error)
-	GetOtp(context.Context, *GetOTPParam) (*SetOTPPayload, error)
+	SetOTP(context.Context, *OTPPayload) (*OkResponse, error)
+	GetOtp(context.Context, *OTPPayload) (*OkResponse, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -199,10 +199,10 @@ func (UnimplementedSessionServiceServer) GetRole(context.Context, *GetRoleParam)
 func (UnimplementedSessionServiceServer) HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HaveAccess not implemented")
 }
-func (UnimplementedSessionServiceServer) SetOTP(context.Context, *SetOTPPayload) (*OkResponse, error) {
+func (UnimplementedSessionServiceServer) SetOTP(context.Context, *OTPPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetOTP not implemented")
 }
-func (UnimplementedSessionServiceServer) GetOtp(context.Context, *GetOTPParam) (*SetOTPPayload, error) {
+func (UnimplementedSessionServiceServer) GetOtp(context.Context, *OTPPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOtp not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
@@ -381,7 +381,7 @@ func _SessionService_HaveAccess_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _SessionService_SetOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetOTPPayload)
+	in := new(OTPPayload)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -393,13 +393,13 @@ func _SessionService_SetOTP_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/user_session_service.SessionService/SetOTP",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).SetOTP(ctx, req.(*SetOTPPayload))
+		return srv.(SessionServiceServer).SetOTP(ctx, req.(*OTPPayload))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _SessionService_GetOtp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetOTPParam)
+	in := new(OTPPayload)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -411,7 +411,7 @@ func _SessionService_GetOtp_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/user_session_service.SessionService/GetOtp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).GetOtp(ctx, req.(*GetOTPParam))
+		return srv.(SessionServiceServer).GetOtp(ctx, req.(*OTPPayload))
 	}
 	return interceptor(ctx, in, info, handler)
 }

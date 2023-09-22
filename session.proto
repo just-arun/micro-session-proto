@@ -23,19 +23,14 @@ service SessionService {
     rpc HaveAccess(HaveAccessParam) returns(HaveAccessResponse);
 
     // One Time Password and Temporary link
-    rpc SetOTP(SetOTPPayload) returns(OkResponse);
-    rpc GetOtp(GetOTPParam) returns(SetOTPPayload);
+    rpc SetOTP(OTPPayload) returns(OkResponse);
+    rpc GetOtp(OTPPayload) returns(OkResponse);
 }
 
-message SetOTPPayload {
+message OTPPayload {
     string otp = 1;
     string key = 2;
     uint64 userID = 3;
-}
-
-message GetOTPParam {
-    string otp = 1;
-    uint64 userID = 2;
 }
 
 message VerifyUserSessionParams {
