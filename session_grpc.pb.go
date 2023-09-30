@@ -32,8 +32,8 @@ type SessionServiceClient interface {
 	SetRole(ctx context.Context, in *RoleObject, opts ...grpc.CallOption) (*OkResponse, error)
 	GetRole(ctx context.Context, in *GetRoleParam, opts ...grpc.CallOption) (*GetRoleReponse, error)
 	// path map
-	SetServiceMap(ctx context.Context, in *SetServiceMapPayload, opts ...grpc.CallOption) (*OkResponse, error)
-	GetServiceMap(ctx context.Context, in *NoPayload, opts ...grpc.CallOption) (*GetServiceMapReturns, error)
+	SetServiceMap(ctx context.Context, opts ...grpc.CallOption) (SessionService_SetServiceMapClient, error)
+	GetServiceMap(ctx context.Context, in *NoPayload, opts ...grpc.CallOption) (SessionService_GetServiceMapClient, error)
 	// for access check
 	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
 	VerifyUserSession(ctx context.Context, in *VerifyUserSessionParams, opts ...grpc.CallOption) (*VerifyUserSessionResponse, error)
@@ -114,22 +114,70 @@ func (c *sessionServiceClient) GetRole(ctx context.Context, in *GetRoleParam, op
 	return out, nil
 }
 
-func (c *sessionServiceClient) SetServiceMap(ctx context.Context, in *SetServiceMapPayload, opts ...grpc.CallOption) (*OkResponse, error) {
-	out := new(OkResponse)
-	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetServiceMap", in, out, opts...)
+func (c *sessionServiceClient) SetServiceMap(ctx context.Context, opts ...grpc.CallOption) (SessionService_SetServiceMapClient, error) {
+	stream, err := c.cc.NewStream(ctx, &SessionService_ServiceDesc.Streams[0], "/user_session_service.SessionService/SetServiceMap", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &sessionServiceSetServiceMapClient{stream}
+	return x, nil
 }
 
-func (c *sessionServiceClient) GetServiceMap(ctx context.Context, in *NoPayload, opts ...grpc.CallOption) (*GetServiceMapReturns, error) {
-	out := new(GetServiceMapReturns)
-	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/GetServiceMap", in, out, opts...)
+type SessionService_SetServiceMapClient interface {
+	Send(*ServiceMapData) error
+	CloseAndRecv() (*OkResponse, error)
+	grpc.ClientStream
+}
+
+type sessionServiceSetServiceMapClient struct {
+	grpc.ClientStream
+}
+
+func (x *sessionServiceSetServiceMapClient) Send(m *ServiceMapData) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *sessionServiceSetServiceMapClient) CloseAndRecv() (*OkResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(OkResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *sessionServiceClient) GetServiceMap(ctx context.Context, in *NoPayload, opts ...grpc.CallOption) (SessionService_GetServiceMapClient, error) {
+	stream, err := c.cc.NewStream(ctx, &SessionService_ServiceDesc.Streams[1], "/user_session_service.SessionService/GetServiceMap", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &sessionServiceGetServiceMapClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type SessionService_GetServiceMapClient interface {
+	Recv() (*ServiceMapData, error)
+	grpc.ClientStream
+}
+
+type sessionServiceGetServiceMapClient struct {
+	grpc.ClientStream
+}
+
+func (x *sessionServiceGetServiceMapClient) Recv() (*ServiceMapData, error) {
+	m := new(ServiceMapData)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *sessionServiceClient) HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error) {
@@ -191,8 +239,8 @@ type SessionServiceServer interface {
 	SetRole(context.Context, *RoleObject) (*OkResponse, error)
 	GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error)
 	// path map
-	SetServiceMap(context.Context, *SetServiceMapPayload) (*OkResponse, error)
-	GetServiceMap(context.Context, *NoPayload) (*GetServiceMapReturns, error)
+	SetServiceMap(SessionService_SetServiceMapServer) error
+	GetServiceMap(*NoPayload, SessionService_GetServiceMapServer) error
 	// for access check
 	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
 	VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error)
@@ -228,11 +276,11 @@ func (UnimplementedSessionServiceServer) SetRole(context.Context, *RoleObject) (
 func (UnimplementedSessionServiceServer) GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRole not implemented")
 }
-func (UnimplementedSessionServiceServer) SetServiceMap(context.Context, *SetServiceMapPayload) (*OkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetServiceMap not implemented")
+func (UnimplementedSessionServiceServer) SetServiceMap(SessionService_SetServiceMapServer) error {
+	return status.Errorf(codes.Unimplemented, "method SetServiceMap not implemented")
 }
-func (UnimplementedSessionServiceServer) GetServiceMap(context.Context, *NoPayload) (*GetServiceMapReturns, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetServiceMap not implemented")
+func (UnimplementedSessionServiceServer) GetServiceMap(*NoPayload, SessionService_GetServiceMapServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetServiceMap not implemented")
 }
 func (UnimplementedSessionServiceServer) HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HaveAccess not implemented")
@@ -388,40 +436,51 @@ func _SessionService_GetRole_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SessionService_SetServiceMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetServiceMapPayload)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SessionServiceServer).SetServiceMap(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user_session_service.SessionService/SetServiceMap",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).SetServiceMap(ctx, req.(*SetServiceMapPayload))
-	}
-	return interceptor(ctx, in, info, handler)
+func _SessionService_SetServiceMap_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SessionServiceServer).SetServiceMap(&sessionServiceSetServiceMapServer{stream})
 }
 
-func _SessionService_GetServiceMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NoPayload)
-	if err := dec(in); err != nil {
+type SessionService_SetServiceMapServer interface {
+	SendAndClose(*OkResponse) error
+	Recv() (*ServiceMapData, error)
+	grpc.ServerStream
+}
+
+type sessionServiceSetServiceMapServer struct {
+	grpc.ServerStream
+}
+
+func (x *sessionServiceSetServiceMapServer) SendAndClose(m *OkResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *sessionServiceSetServiceMapServer) Recv() (*ServiceMapData, error) {
+	m := new(ServiceMapData)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	if interceptor == nil {
-		return srv.(SessionServiceServer).GetServiceMap(ctx, in)
+	return m, nil
+}
+
+func _SessionService_GetServiceMap_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoPayload)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user_session_service.SessionService/GetServiceMap",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).GetServiceMap(ctx, req.(*NoPayload))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(SessionServiceServer).GetServiceMap(m, &sessionServiceGetServiceMapServer{stream})
+}
+
+type SessionService_GetServiceMapServer interface {
+	Send(*ServiceMapData) error
+	grpc.ServerStream
+}
+
+type sessionServiceGetServiceMapServer struct {
+	grpc.ServerStream
+}
+
+func (x *sessionServiceGetServiceMapServer) Send(m *ServiceMapData) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _SessionService_HaveAccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -550,14 +609,6 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SessionService_GetRole_Handler,
 		},
 		{
-			MethodName: "SetServiceMap",
-			Handler:    _SessionService_SetServiceMap_Handler,
-		},
-		{
-			MethodName: "GetServiceMap",
-			Handler:    _SessionService_GetServiceMap_Handler,
-		},
-		{
 			MethodName: "HaveAccess",
 			Handler:    _SessionService_HaveAccess_Handler,
 		},
@@ -578,6 +629,17 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SessionService_GetAndExpireOTP_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "SetServiceMap",
+			Handler:       _SessionService_SetServiceMap_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "GetServiceMap",
+			Handler:       _SessionService_GetServiceMap_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "session.proto",
 }
