@@ -19,8 +19,8 @@ service SessionService {
     rpc GetRole(GetRoleParam) returns(GetRoleReponse);
    
     // path map
-    rpc SetServiceMap(stream ServiceMapData) returns(OkResponse);
-    rpc GetServiceMap(NoPayload) returns(stream ServiceMapData);
+    rpc SetServiceMap(stream SetServiceMapPayload) returns(OkResponse);
+    rpc GetServiceMap(NoPayload) returns(stream GetServiceMapReturns);
 
     // for access check
     rpc HaveAccess(HaveAccessParam) returns(HaveAccessResponse);
@@ -32,6 +32,9 @@ service SessionService {
     rpc GetAndExpireOTP(OTPPayload) returns(OkResponse);
 }
 
+message SetServiceMapPayload {
+    repeated ServiceMapData data = 1;
+}
 
 message ServiceMapData {
     uint64 id = 1;
@@ -41,6 +44,10 @@ message ServiceMapData {
 }
 
 message NoPayload {}
+
+message GetServiceMapReturns {
+    repeated ServiceMapData data = 1;
+}
 
 message OTPPayload {
     string otp = 1;
