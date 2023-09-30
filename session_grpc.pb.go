@@ -28,7 +28,6 @@ type SessionServiceClient interface {
 	ClearUserAllSession(ctx context.Context, in *ClearUserAllSessionPayload, opts ...grpc.CallOption) (*OkResponse, error)
 	GetUserAllSession(ctx context.Context, in *GetUserAllSessionPayload, opts ...grpc.CallOption) (*GetUserAllSessionResponse, error)
 	GetUserSessionRefreshToken(ctx context.Context, in *GetUserSessionRefreshTokenPayload, opts ...grpc.CallOption) (*SetUserSessionResponse, error)
-	VerifyUserSession(ctx context.Context, in *VerifyUserSessionParams, opts ...grpc.CallOption) (*VerifyUserSessionResponse, error)
 	// for roles
 	SetRole(ctx context.Context, in *RoleObject, opts ...grpc.CallOption) (*OkResponse, error)
 	GetRole(ctx context.Context, in *GetRoleParam, opts ...grpc.CallOption) (*GetRoleReponse, error)
@@ -37,6 +36,7 @@ type SessionServiceClient interface {
 	GetServiceMap(ctx context.Context, in *NoPayload, opts ...grpc.CallOption) (*GetServiceMapReturns, error)
 	// for access check
 	HaveAccess(ctx context.Context, in *HaveAccessParam, opts ...grpc.CallOption) (*HaveAccessResponse, error)
+	VerifyUserSession(ctx context.Context, in *VerifyUserSessionParams, opts ...grpc.CallOption) (*VerifyUserSessionResponse, error)
 	// One Time Password and Temporary link
 	SetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
 	GetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
@@ -96,15 +96,6 @@ func (c *sessionServiceClient) GetUserSessionRefreshToken(ctx context.Context, i
 	return out, nil
 }
 
-func (c *sessionServiceClient) VerifyUserSession(ctx context.Context, in *VerifyUserSessionParams, opts ...grpc.CallOption) (*VerifyUserSessionResponse, error) {
-	out := new(VerifyUserSessionResponse)
-	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/VerifyUserSession", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *sessionServiceClient) SetRole(ctx context.Context, in *RoleObject, opts ...grpc.CallOption) (*OkResponse, error) {
 	out := new(OkResponse)
 	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetRole", in, out, opts...)
@@ -150,6 +141,15 @@ func (c *sessionServiceClient) HaveAccess(ctx context.Context, in *HaveAccessPar
 	return out, nil
 }
 
+func (c *sessionServiceClient) VerifyUserSession(ctx context.Context, in *VerifyUserSessionParams, opts ...grpc.CallOption) (*VerifyUserSessionResponse, error) {
+	out := new(VerifyUserSessionResponse)
+	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/VerifyUserSession", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *sessionServiceClient) SetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error) {
 	out := new(OkResponse)
 	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SetOTP", in, out, opts...)
@@ -187,7 +187,6 @@ type SessionServiceServer interface {
 	ClearUserAllSession(context.Context, *ClearUserAllSessionPayload) (*OkResponse, error)
 	GetUserAllSession(context.Context, *GetUserAllSessionPayload) (*GetUserAllSessionResponse, error)
 	GetUserSessionRefreshToken(context.Context, *GetUserSessionRefreshTokenPayload) (*SetUserSessionResponse, error)
-	VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error)
 	// for roles
 	SetRole(context.Context, *RoleObject) (*OkResponse, error)
 	GetRole(context.Context, *GetRoleParam) (*GetRoleReponse, error)
@@ -196,6 +195,7 @@ type SessionServiceServer interface {
 	GetServiceMap(context.Context, *NoPayload) (*GetServiceMapReturns, error)
 	// for access check
 	HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error)
+	VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error)
 	// One Time Password and Temporary link
 	SetOTP(context.Context, *OTPPayload) (*OkResponse, error)
 	GetOTP(context.Context, *OTPPayload) (*OkResponse, error)
@@ -222,9 +222,6 @@ func (UnimplementedSessionServiceServer) GetUserAllSession(context.Context, *Get
 func (UnimplementedSessionServiceServer) GetUserSessionRefreshToken(context.Context, *GetUserSessionRefreshTokenPayload) (*SetUserSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserSessionRefreshToken not implemented")
 }
-func (UnimplementedSessionServiceServer) VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyUserSession not implemented")
-}
 func (UnimplementedSessionServiceServer) SetRole(context.Context, *RoleObject) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetRole not implemented")
 }
@@ -239,6 +236,9 @@ func (UnimplementedSessionServiceServer) GetServiceMap(context.Context, *NoPaylo
 }
 func (UnimplementedSessionServiceServer) HaveAccess(context.Context, *HaveAccessParam) (*HaveAccessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HaveAccess not implemented")
+}
+func (UnimplementedSessionServiceServer) VerifyUserSession(context.Context, *VerifyUserSessionParams) (*VerifyUserSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyUserSession not implemented")
 }
 func (UnimplementedSessionServiceServer) SetOTP(context.Context, *OTPPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetOTP not implemented")
@@ -352,24 +352,6 @@ func _SessionService_GetUserSessionRefreshToken_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SessionService_VerifyUserSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyUserSessionParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SessionServiceServer).VerifyUserSession(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user_session_service.SessionService/VerifyUserSession",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).VerifyUserSession(ctx, req.(*VerifyUserSessionParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _SessionService_SetRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RoleObject)
 	if err := dec(in); err != nil {
@@ -460,6 +442,24 @@ func _SessionService_HaveAccess_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionService_VerifyUserSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyUserSessionParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionServiceServer).VerifyUserSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_session_service.SessionService/VerifyUserSession",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionServiceServer).VerifyUserSession(ctx, req.(*VerifyUserSessionParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _SessionService_SetOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(OTPPayload)
 	if err := dec(in); err != nil {
@@ -542,10 +542,6 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SessionService_GetUserSessionRefreshToken_Handler,
 		},
 		{
-			MethodName: "VerifyUserSession",
-			Handler:    _SessionService_VerifyUserSession_Handler,
-		},
-		{
 			MethodName: "SetRole",
 			Handler:    _SessionService_SetRole_Handler,
 		},
@@ -564,6 +560,10 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HaveAccess",
 			Handler:    _SessionService_HaveAccess_Handler,
+		},
+		{
+			MethodName: "VerifyUserSession",
+			Handler:    _SessionService_VerifyUserSession_Handler,
 		},
 		{
 			MethodName: "SetOTP",

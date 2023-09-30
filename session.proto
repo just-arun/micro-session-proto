@@ -13,7 +13,6 @@ service SessionService {
     rpc ClearUserAllSession(ClearUserAllSessionPayload) returns(OkResponse);
     rpc GetUserAllSession(GetUserAllSessionPayload) returns(GetUserAllSessionResponse);
     rpc GetUserSessionRefreshToken(GetUserSessionRefreshTokenPayload) returns(SetUserSessionResponse);
-    rpc VerifyUserSession(VerifyUserSessionParams) returns(VerifyUserSessionResponse);
     
     // for roles
     rpc SetRole(RoleObject) returns(OkResponse);
@@ -25,6 +24,7 @@ service SessionService {
 
     // for access check
     rpc HaveAccess(HaveAccessParam) returns(HaveAccessResponse);
+    rpc VerifyUserSession(VerifyUserSessionParams) returns(VerifyUserSessionResponse);
 
     // One Time Password and Temporary link
     rpc SetOTP(OTPPayload) returns(OkResponse);
@@ -33,6 +33,10 @@ service SessionService {
 }
 
 message SetServiceMapPayload {
+    repeated ServiceMapData data = 1;
+}
+
+message ServiceMapData {
     uint64 id = 1;
 	string key = 2;
 	string value = 3;
@@ -42,7 +46,7 @@ message SetServiceMapPayload {
 message NoPayload {}
 
 message GetServiceMapReturns {
-    repeated SetServiceMapPayload data = 1;
+    repeated ServiceMapData data = 1;
 }
 
 message OTPPayload {
