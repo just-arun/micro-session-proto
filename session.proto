@@ -19,7 +19,7 @@ service SessionService {
     rpc GetRole(GetRoleParam) returns(GetRoleReponse);
    
     // path map
-    rpc SetServiceMap(stream ServiceMapData) returns(OkResponseList);
+    rpc SetServiceMap(stream ServiceMapData) returns(OkResponse);
     rpc GetServiceMap(NoPayload) returns(stream ServiceMapData);
 
     // for access check
