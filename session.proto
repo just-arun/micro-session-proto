@@ -19,8 +19,8 @@ service SessionService {
     rpc GetRole(GetRoleParam) returns(GetRoleReponse);
    
     // path map
-    rpc SetServiceMap(stream SetServiceMapPayload) returns(OkResponse);
-    rpc GetServiceMap(NoPayload) returns(stream GetServiceMapReturns);
+    rpc SetServiceMap(stream ServiceMapData) returns(OkResponseList);
+    rpc GetServiceMap(NoPayload) returns(stream ServiceMapData);
 
     // for access check
     rpc HaveAccess(HaveAccessParam) returns(HaveAccessResponse);
@@ -44,6 +44,10 @@ message ServiceMapData {
 }
 
 message NoPayload {}
+
+message OkResponseList {
+    repeated bool ok = 1;
+}
 
 message GetServiceMapReturns {
     repeated ServiceMapData data = 1;

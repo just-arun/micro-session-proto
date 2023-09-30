@@ -124,8 +124,8 @@ func (c *sessionServiceClient) SetServiceMap(ctx context.Context, opts ...grpc.C
 }
 
 type SessionService_SetServiceMapClient interface {
-	Send(*SetServiceMapPayload) error
-	CloseAndRecv() (*OkResponse, error)
+	Send(*ServiceMapData) error
+	CloseAndRecv() (*OkResponseList, error)
 	grpc.ClientStream
 }
 
@@ -133,15 +133,15 @@ type sessionServiceSetServiceMapClient struct {
 	grpc.ClientStream
 }
 
-func (x *sessionServiceSetServiceMapClient) Send(m *SetServiceMapPayload) error {
+func (x *sessionServiceSetServiceMapClient) Send(m *ServiceMapData) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *sessionServiceSetServiceMapClient) CloseAndRecv() (*OkResponse, error) {
+func (x *sessionServiceSetServiceMapClient) CloseAndRecv() (*OkResponseList, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(OkResponse)
+	m := new(OkResponseList)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -164,7 +164,7 @@ func (c *sessionServiceClient) GetServiceMap(ctx context.Context, in *NoPayload,
 }
 
 type SessionService_GetServiceMapClient interface {
-	Recv() (*GetServiceMapReturns, error)
+	Recv() (*ServiceMapData, error)
 	grpc.ClientStream
 }
 
@@ -172,8 +172,8 @@ type sessionServiceGetServiceMapClient struct {
 	grpc.ClientStream
 }
 
-func (x *sessionServiceGetServiceMapClient) Recv() (*GetServiceMapReturns, error) {
-	m := new(GetServiceMapReturns)
+func (x *sessionServiceGetServiceMapClient) Recv() (*ServiceMapData, error) {
+	m := new(ServiceMapData)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -441,8 +441,8 @@ func _SessionService_SetServiceMap_Handler(srv interface{}, stream grpc.ServerSt
 }
 
 type SessionService_SetServiceMapServer interface {
-	SendAndClose(*OkResponse) error
-	Recv() (*SetServiceMapPayload, error)
+	SendAndClose(*OkResponseList) error
+	Recv() (*ServiceMapData, error)
 	grpc.ServerStream
 }
 
@@ -450,12 +450,12 @@ type sessionServiceSetServiceMapServer struct {
 	grpc.ServerStream
 }
 
-func (x *sessionServiceSetServiceMapServer) SendAndClose(m *OkResponse) error {
+func (x *sessionServiceSetServiceMapServer) SendAndClose(m *OkResponseList) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *sessionServiceSetServiceMapServer) Recv() (*SetServiceMapPayload, error) {
-	m := new(SetServiceMapPayload)
+func (x *sessionServiceSetServiceMapServer) Recv() (*ServiceMapData, error) {
+	m := new(ServiceMapData)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -471,7 +471,7 @@ func _SessionService_GetServiceMap_Handler(srv interface{}, stream grpc.ServerSt
 }
 
 type SessionService_GetServiceMapServer interface {
-	Send(*GetServiceMapReturns) error
+	Send(*ServiceMapData) error
 	grpc.ServerStream
 }
 
@@ -479,7 +479,7 @@ type sessionServiceGetServiceMapServer struct {
 	grpc.ServerStream
 }
 
-func (x *sessionServiceGetServiceMapServer) Send(m *GetServiceMapReturns) error {
+func (x *sessionServiceGetServiceMapServer) Send(m *ServiceMapData) error {
 	return x.ServerStream.SendMsg(m)
 }
 
