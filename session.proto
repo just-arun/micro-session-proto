@@ -30,6 +30,9 @@ service SessionService {
     rpc SetOTP(OTPPayload) returns(OkResponse);
     rpc GetOTP(OTPPayload) returns(OkResponse);
     rpc GetAndExpireOTP(OTPPayload) returns(OkResponse);
+
+    // Mailing
+    rpc SendMail(MailSendTwoFactorAuthOtpPayload) returns(OkResponse);
 }
 
 message SetServiceMapPayload {
@@ -144,4 +147,21 @@ message HaveAccessResponse {
 message OkResponse {
     bool ok = 1;
 }
+
+
+enum MailType {
+    ForgotPassword = 0;
+    TwoFactorAuth = 1;
+    VerificationEmail = 2;
+}
+
+message MailSendTwoFactorAuthOtpPayload {
+	string fromName = 1;
+	string fromEmail = 2;
+	string toName = 3;
+	string toEmail = 4;
+    MailType mailType = 5;
+}
+
+
 
