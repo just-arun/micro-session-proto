@@ -160,7 +160,9 @@ message MailSendTwoFactorAuthOtpPayload {
 	string fromEmail = 2;
 	string toName = 3;
 	string toEmail = 4;
-    MailType mailType = 5;
+    string otp = 5;
+    string link = 6;
+    MailType mailType = 7;
 }
 
 
