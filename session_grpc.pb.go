@@ -41,8 +41,6 @@ type SessionServiceClient interface {
 	SetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
 	GetOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
 	GetAndExpireOTP(ctx context.Context, in *OTPPayload, opts ...grpc.CallOption) (*OkResponse, error)
-	// Mailing
-	SendMail(ctx context.Context, in *MailSendTwoFactorAuthOtpPayload, opts ...grpc.CallOption) (*OkResponse, error)
 }
 
 type sessionServiceClient struct {
@@ -227,15 +225,6 @@ func (c *sessionServiceClient) GetAndExpireOTP(ctx context.Context, in *OTPPaylo
 	return out, nil
 }
 
-func (c *sessionServiceClient) SendMail(ctx context.Context, in *MailSendTwoFactorAuthOtpPayload, opts ...grpc.CallOption) (*OkResponse, error) {
-	out := new(OkResponse)
-	err := c.cc.Invoke(ctx, "/user_session_service.SessionService/SendMail", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // SessionServiceServer is the server API for SessionService service.
 // All implementations must embed UnimplementedSessionServiceServer
 // for forward compatibility
@@ -259,8 +248,6 @@ type SessionServiceServer interface {
 	SetOTP(context.Context, *OTPPayload) (*OkResponse, error)
 	GetOTP(context.Context, *OTPPayload) (*OkResponse, error)
 	GetAndExpireOTP(context.Context, *OTPPayload) (*OkResponse, error)
-	// Mailing
-	SendMail(context.Context, *MailSendTwoFactorAuthOtpPayload) (*OkResponse, error)
 	mustEmbedUnimplementedSessionServiceServer()
 }
 
@@ -309,9 +296,6 @@ func (UnimplementedSessionServiceServer) GetOTP(context.Context, *OTPPayload) (*
 }
 func (UnimplementedSessionServiceServer) GetAndExpireOTP(context.Context, *OTPPayload) (*OkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAndExpireOTP not implemented")
-}
-func (UnimplementedSessionServiceServer) SendMail(context.Context, *MailSendTwoFactorAuthOtpPayload) (*OkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendMail not implemented")
 }
 func (UnimplementedSessionServiceServer) mustEmbedUnimplementedSessionServiceServer() {}
 
@@ -589,24 +573,6 @@ func _SessionService_GetAndExpireOTP_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SessionService_SendMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MailSendTwoFactorAuthOtpPayload)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SessionServiceServer).SendMail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user_session_service.SessionService/SendMail",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServiceServer).SendMail(ctx, req.(*MailSendTwoFactorAuthOtpPayload))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // SessionService_ServiceDesc is the grpc.ServiceDesc for SessionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -661,10 +627,6 @@ var SessionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAndExpireOTP",
 			Handler:    _SessionService_GetAndExpireOTP_Handler,
-		},
-		{
-			MethodName: "SendMail",
-			Handler:    _SessionService_SendMail_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
