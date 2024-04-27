@@ -1,0 +1,146 @@
+syntax="proto3";
+
+import "timestamp.proto";
+
+option java_multiple_files = true;
+
+package org.baeldung.grpc;
+
+service SessionService {
+    // for user session
+    rpc SetUserSession(UserSessionPayload) returns(SetUserSessionResponse);
+    rpc DeleteUserSession(DeleteUserSessionPayload) returns(OkResponse);
+    rpc ClearUserAllSession(ClearUserAllSessionPayload) returns(OkResponse);
+    rpc GetUserAllSession(GetUserAllSessionPayload) returns(GetUserAllSessionResponse);
+    rpc GetUserSessionRefreshToken(GetUserSessionRefreshTokenPayload) returns(SetUserSessionResponse);
+    
+    // for roles
+    rpc SetRole(RoleObject) returns(OkResponse);
+    rpc GetRole(GetRoleParam) returns(GetRoleReponse);
+   
+    // path map
+    rpc SetServiceMap(stream ServiceMapData) returns(OkResponse);
+    rpc GetServiceMap(NoPayload) returns(stream ServiceMapData);
+
+    // for access check
+    rpc HaveAccess(HaveAccessParam) returns(HaveAccessResponse);
+    rpc VerifyUserSession(VerifyUserSessionParams) returns(VerifyUserSessionResponse);
+
+    // One Time Password and Temporary link
+    rpc SetOTP(OTPPayload) returns(OkResponse);
+    rpc GetOTP(OTPPayload) returns(OkResponse);
+    rpc GetAndExpireOTP(OTPPayload) returns(OkResponse);
+}
+
+message SetServiceMapPayload {
+    repeated ServiceMapData data = 1;
+}
+
+message ServiceMapData {
+    uint64 id = 1;
+	string key = 2;
+	string value = 3;
+	bool Auth = 4;
+}
+
+message NoPayload {}
+
+message OkResponseList {
+    repeated bool ok = 1;
+}
+
+message GetServiceMapReturns {
+    repeated ServiceMapData data = 1;
+}
+
+message OTPPayload {
+    string otp = 1;
+    string key = 2;
+    uint64 userID = 3;
+}
+
+message VerifyUserSessionParams {
+    string token = 1;
+}
+
+message VerifyUserSessionResponse {
+    bool ok = 1;
+    uint64 userID = 2;
+    repeated string roles = 3;
+}
+
+message UserSessionPayload {
+    uint64 userID = 1;
+    repeated string roles = 2;
+    uint64 accessTokenExpireInMinutes = 3;
+    uint64 refreshTokenExpireInMinutes = 4;
+}
+
+message SetUserSessionResponse {
+    string token = 1;
+    string refresh = 2;
+}
+
+message DeleteUserSessionPayload {
+    string token = 1;
+}
+
+message ClearUserAllSessionPayload {
+    uint64 userID = 1;
+}
+
+message GetUserAllSessionPayload {
+    uint64 userID = 1;
+}
+
+message UserSessionData {
+    uint64 userID = 1;
+    repeated string roles = 2;
+    google.protobuf.Timestamp time = 3;
+}
+
+message GetUserAllSessionResponse {
+    repeated UserSessionData session = 1;
+}
+
+message GetUserSessionRefreshTokenPayload {
+    string refreshToken = 1;
+    uint64 accessTokenExpireInMinutes = 3;
+}
+
+message SetRoleParam {
+    uint64 id = 1;
+    string name = 2;
+    repeated RoleObject data = 3;
+}
+
+message AccessObject {
+    uint64 id = 1;
+    string key = 2;
+}
+
+message RoleObject {
+    uint64 id = 1;
+    string name = 2;
+    repeated AccessObject access = 3;
+}
+
+message GetRoleParam {
+    string name = 1;
+
+}
+message GetRoleReponse {
+    repeated AccessObject access = 1;
+}
+
+message HaveAccessParam {
+    string accessSlug = 1;
+    repeated string roles = 2;
+}
+message HaveAccessResponse {
+    bool access = 1;
+}
+
+message OkResponse {
+    bool ok = 1;
+}
