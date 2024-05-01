@@ -127,7 +127,7 @@ message RoleObject {
 }
 
 message GetRoleParam {
-    string name = 1;
+    uint64 id = 1;
 
 }
 message GetRoleReponse {
